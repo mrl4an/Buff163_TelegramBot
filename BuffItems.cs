@@ -13,12 +13,17 @@ namespace Buff163_TelegramBot
         public double paintwear { get; set; }
         public double actual_price {  get; set; }
         public string link_for_item { get; set; }
-        public BuffItem(int id_item, double paintwear, double actual_price, string link_for_item)
+
+        public string item_name { get; set; }
+        public double item_steamprice { get; set; }
+        public BuffItem(int id_item, double paintwear, double actual_price, string link_for_item, double item_steamprice, string item_name)
         {
             this.id_item = id_item;
             this.paintwear = paintwear;
             this.actual_price = actual_price;
             this.link_for_item = link_for_item;
+            this.item_steamprice = item_steamprice;
+            this.item_name = item_name;
         }
     }
     /*public class Weapon

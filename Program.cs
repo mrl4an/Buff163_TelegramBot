@@ -2,6 +2,7 @@
 using Microsoft.Graph.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
+using System.Net;
 
 namespace Buff163_TelegramBot
 {
@@ -16,96 +19,229 @@ namespace Buff163_TelegramBot
     {
         public static List<string> WeaponLink_List = new List<string>()
         {
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921424&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921550&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921492&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921530&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921552&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921481&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921533&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921553&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921523&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921562&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781536&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781555&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781626&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781616&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781560&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781629&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781610&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781660&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900511&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900466&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900603&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900470&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900607&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900492&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900565&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36444&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35739&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=33821&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34481&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36589&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35801&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35006&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36442&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35898&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763278&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763335&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763256&min_paintwear=0.00&max_paintwear=0.01",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921434&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921451&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921430&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921423&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921416&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921469&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921519&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921527&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781589&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781605&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781572&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781594&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781643&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781559&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781591&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900503&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900489&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900527&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900502&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900576&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900485&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900615&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763311&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871443&min_paintwear=0.07&max_paintwear=0.08",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921421&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921420&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921439&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921427&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921426&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921511&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921493&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921462&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921517&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921536&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921569&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781614&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781592&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781577&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781567&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781568&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900478&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900497&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900518&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=33960&min_paintwear=0.15&max_paintwear=0.18",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35002&min_paintwear=0.76&max_paintwear=0.80",
-            @"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34065&min_paintwear=0.90&max_paintwear=1.00"
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921424",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921550",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921492",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921530",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921552",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921481",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921533",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921553",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921523",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921562",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781536",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781555",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781626",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781616",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781560",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781629",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781610",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781660",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900511",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900466",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900603",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900470",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900607",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900492",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900565",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36444",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35739",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=33821",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34481",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36589",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35801",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35006",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36442",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35898",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763278",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763335",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763256",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921523",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921553",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921562",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=921576",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900529",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=900565",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=887070",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871431",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871746",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871636",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871340",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=857690",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=835670",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=835906",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=835780",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781610",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781629",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781560",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781649",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=781660",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=775807",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=773706",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=773667",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=773668",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763335",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763278",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763256",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=763311",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=759249",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=759275",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=759363",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=759243",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=45261",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34088",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34359",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=42191",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35942",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36359",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=33910",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34431",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34083",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35827",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=33945",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35326",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=42181",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35207",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34832",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36528",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36458",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34095",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=33859",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35190",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36114",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34399",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34733",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=927380",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=927389",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=927390",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=927375",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=927385",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871596",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871548",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871122",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871680",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871291",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871288",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=871289",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=835860",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=835877",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=835856",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36008",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34439",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34891",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=42037",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35470",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36168",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35374",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=35906",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=36497",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=42157",
+@"https://buff.163.com/api/market/goods/sell_order?game=csgo&goods_id=34706"
         };//ссылки предварительно обработаны для использования встроеннного API
-        public static async Task webstream(string link, double percentBuy)
+
+        public static List<WebProxy> ProxyList = new List<WebProxy>()
+        {
+            new WebProxy{
+            Address = new Uri($"http://5.101.80.210:8000"),
+    BypassProxyOnLocal = false,
+    UseDefaultCredentials = false,
+    
+    // Proxy credentials
+    Credentials = new NetworkCredential(
+        userName: "g33PuE",
+        password: "x1JAqg")
+            },
+            new WebProxy{
+            Address = new Uri($"http://5.101.81.97:8000"),
+    BypassProxyOnLocal = false,
+    UseDefaultCredentials = false,
+    
+    // Proxy credentials
+    Credentials = new NetworkCredential(
+        userName: "g33PuE",
+        password: "x1JAqg")
+            },
+            new WebProxy{
+            Address = new Uri($"http://5.101.84.3:8000"),
+    BypassProxyOnLocal = false,
+    UseDefaultCredentials = false,
+    
+    // Proxy credentials
+    Credentials = new NetworkCredential(
+        userName: "g33PuE",
+        password: "x1JAqg")
+            },
+            new WebProxy{
+            Address = new Uri($"http://5.101.84.235:8000"),
+    BypassProxyOnLocal = false,
+    UseDefaultCredentials = false,
+    
+    // Proxy credentials
+    Credentials = new NetworkCredential(
+        userName: "g33PuE",
+        password: "x1JAqg")
+            },
+            new WebProxy{
+            Address = new Uri($"http://5.101.84.171:8000"),
+    BypassProxyOnLocal = false,
+    UseDefaultCredentials = false,
+    
+    // Proxy credentials
+    Credentials = new NetworkCredential(
+        userName: "g33PuE",
+        password: "x1JAqg")
+            }
+
+        };
+
+        public static void sql_sender(BuffItem item)
         {
             try
             {
+
+                MySqlConnection conn = new MySqlConnection(config.Sql_con);
+                conn.Open();
+                string sql = $"SELECT EXISTS(SELECT id FROM `Buff163_base` WHERE `paintwear` = '{item.paintwear.ToString().Replace(',', '.')}')";
+                MySqlCommand command = new MySqlCommand(sql, conn);
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (reader.GetString(0) == "0")
+                    {
+                        MySqlConnection conn2 = new MySqlConnection(config.Sql_con);
+                        conn2.Open();
+                        string sql2 = $"INSERT INTO `Buff163_base` (`paintwear`, `average_price`, `link_for_item`, `item_name`, `item_price`, `sended`) VALUES ('{item.paintwear.ToString().Replace(',', '.')}', '{item.item_steamprice.ToString().Replace(',', '.')}', '{item.link_for_item}', '{item.item_name}', '{item.actual_price.ToString().Replace(',', '.')}', '0')";
+                        MySqlCommand command2 = new MySqlCommand(sql2, conn2);
+                        command2.ExecuteNonQuery();
+                        conn2.Close();
+                    }
+                }
+                reader.Close();
+                conn.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+        public static async Task webstream(string link, WebProxy proxyAddress)
+        {
+            try
+            {
+                #region
+                
+                // Create a client handler that uses the proxy
+                var httpClientHandler = new HttpClientHandler
+                {
+                    Proxy = proxyAddress,
+                };
+
+                // Disable SSL verification
+                httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                #endregion //proxy
+
                 string web_page = link;
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClient(handler: httpClientHandler, disposeHandler: true);
                 Stream str = await client.GetStreamAsync(web_page);
                 StreamReader sr = new StreamReader(str);
                 string line;
@@ -130,12 +266,11 @@ namespace Buff163_TelegramBot
                         weapon_name = weapon_name.Substring(0, weapon_name.IndexOf("\""));
                         Console.WriteLine(weapon_name);
                     }
-                    if (line.Contains("steam_price_cny"))
+                    if (line.Contains("_bargain_price\": \""))
                     {
-                        steam_price = line.Substring(line.IndexOf("e_cny\": \"") +9);
+                        steam_price = line.Substring(line.IndexOf("ice\": \"") +7);
                         steam_price = steam_price.Substring(0, steam_price.IndexOf("\""));
                         steam_price = steam_price.Replace(".", ",");
-                        Console.WriteLine(steam_price); 
                     }
                     if (line.Contains("asset_info"))
                     {
@@ -158,8 +293,9 @@ namespace Buff163_TelegramBot
                         result[1] = subString;
                         try
                         {
-                            string item_link = config.Buff_link + id_page + @"&min_paintwear=" + result[0] + @"&max_paintwear=" + result[0];
-                            ItemList.Add(new BuffItem(id_page, Convert.ToDouble(result[0]), Convert.ToDouble(result[1]), item_link));
+                            string item_link = config.Buff_link + id_page + @"?from=market#tab=selling&min_paintwear=" + result[0] + @"&max_paintwear=" + result[0];
+                            if (Convert.ToDouble(result[1]) > 0)
+                                ItemList.Add(new BuffItem(id_page, Convert.ToDouble(result[0]), Convert.ToDouble(result[1]), item_link, Convert.ToDouble(steam_price), weapon_name));
                         }
                         catch
                         {
@@ -170,13 +306,15 @@ namespace Buff163_TelegramBot
 
                 }
                 str.Close();
+                sr.Close();
                 foreach (BuffItem item in ItemList)
                 {
                     try
                     {
-                        if (Convert.ToDouble(steam_price) / 100 * (100 + percentBuy) > item.actual_price)
+                        if (Convert.ToDouble(steam_price) / 100 * (100 + config.Percent_ForBuy) > item.actual_price && config.float_for_buy> item.paintwear)
                         {
-                            Console.WriteLine(item.actual_price+" "+item.link_for_item);
+                            sql_sender(item);
+                            Console.WriteLine(item.actual_price+" "+item.item_name);
                         }
                     }
                     catch(Exception ex) 
@@ -186,29 +324,44 @@ namespace Buff163_TelegramBot
                     }
                    
                 }
+                ItemList = null;
             }
             catch(Exception ex) 
             {
                 Console.WriteLine("Ошибка при попытке подключения");
                 ErrorCounter.ErrorConnection++;
                 Console.WriteLine(ex.Message);
-            }   
+            }
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
         static async Task Main(string[] args)
         {
             while (true)
             {
+                Task task = null;
+                int counter = 0;
                 foreach (string link in WeaponLink_List)
                 {
-                    await webstream(link, config.Percent_ForBuy);
+                    task = new Task(() => webstream(link, ProxyList[counter]));
+                    task.Start();
+
+                    counter++;
+                    if (counter > ProxyList.Count-1)
+                        counter = 0;
+
+                    await Task.Delay(150);
+                    
                 }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                Thread.Sleep(1000);
+
                 Console.WriteLine($"Всего записей: {ErrorCounter.AllINT} ошибок {ErrorCounter.SumErrorINT(0)}");
                 Console.WriteLine($"Проблем с подключением: {ErrorCounter.ErrorConnection}");
                 Console.WriteLine($"Проблем с ценами: {ErrorCounter.ErrorSUM}");
                 Console.WriteLine($"Проблем с добавлением предметов: {ErrorCounter.ErrorAddItem}");
-                Thread.Sleep( 1000 );
             }
-            Console.ReadLine();
         }
     }
 }
